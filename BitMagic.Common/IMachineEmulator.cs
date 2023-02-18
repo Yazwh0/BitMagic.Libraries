@@ -10,16 +10,6 @@ namespace BitMagic.Common
         ICpu Cpu { get; }
     }
 
-    public interface IMachineEmulator : IMachine
-    {
-        IMemory Memory { get; }
-        new ICpuEmulator Cpu { get; }
-        IDisplay Display { get; }
-        void SetRom(byte[] rom);
-        void Build();
-        bool Initialised { get; }
-    }
-
     public interface IVariables
     {
         IReadOnlyDictionary<string, int> Values { get; }

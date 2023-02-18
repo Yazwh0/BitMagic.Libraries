@@ -1,0 +1,1 @@
+# BitMagic.Common

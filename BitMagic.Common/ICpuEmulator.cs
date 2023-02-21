@@ -35,18 +35,6 @@ namespace BitMagic.Common
         public (int Result, bool RequiresRecalc) Evaluate(string expression, IVariables variables, ParameterSize size);
     }
 
-    public interface ICpuEmulator : ICpu
-    {
-        void Reset();
-        IRegisters Registers { get; }
-        void SetProgramCounter(int address);
-        int ClockTick(IMemory memory, bool debugOutput);
-        double Frequency { get; }
-        void SetInterrupt();
-        bool HasInterrupt { get; }
-        int HandleInterrupt(IMemory memory);
-    }
-
     public interface ICpuOpCode
     {
         string Code { get; } // not unique
@@ -59,7 +47,7 @@ namespace BitMagic.Common
 
     public interface IEmulatableCpuOpCode<TCpu> : ICpuOpCode
     {
-        public abstract int Process(byte opCode, Func<(byte value, int timing, ushort pcStep)> GetValueAtPC, Func<(ushort address, int timing, ushort pcStep)> GetAddressAtPc, IMemory memory, TCpu cpu);
+        //public abstract int Process(byte opCode, Func<(byte value, int timing, ushort pcStep)> GetValueAtPC, Func<(ushort address, int timing, ushort pcStep)> GetAddressAtPc, IMemory memory, TCpu cpu);
     }
 
     public enum AccessMode

@@ -32,7 +32,7 @@ namespace BitMagic.Common
     public interface IExpressionEvaluator
     {
         public void Reset();
-        public (int Result, bool RequiresRecalc) Evaluate(string expression, IVariables variables, ParameterSize size);
+        public (int Result, bool RequiresRecalc) Evaluate(string expression, IVariables variables);
     }
 
     public interface ICpuOpCode

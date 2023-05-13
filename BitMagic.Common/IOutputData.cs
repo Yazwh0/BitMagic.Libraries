@@ -5,8 +5,6 @@ namespace BitMagic.Common
     public interface IOutputData
     {        
         byte[] Data { get; }
-        //string OriginalText { get; }
-        //int LineNumber { get; }
         int Address { get; }
         bool RequiresReval { get; }
         List<string> RequiresRevalNames { get; }

@@ -3,7 +3,7 @@
 namespace BitMagic.Common
 {
     public interface IOutputData
-    {        
+    {
         byte[] Data { get; }
         int Address { get; }
         bool RequiresReval { get; }
@@ -15,10 +15,13 @@ namespace BitMagic.Common
 
     public record SourceFilePosition
     {
-        public string Name = "";
-        public int LineNumber;
-        public string Source = "";
-
+        public string Name { get; set; } = "";
+        public int LineNumber { get; set; }
+        public string Source { get; set; } = "";
+        public ISourceFile? SourceFile { get; set; }
+        public SourceFilePosition()
+        {
+        }
         public override string ToString() => $"{Name}:{LineNumber}\n{Source}";
     }
 }

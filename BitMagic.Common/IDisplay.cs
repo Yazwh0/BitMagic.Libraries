@@ -8,8 +8,8 @@ public class BitImage
     public Memory<PixelRgba> DrawPixels { get; internal set; }
     public Memory<PixelRgba> RenderPixels { get; internal set; }
     
-    private PixelRgba[] _pixelsA;
-    private PixelRgba[] _pixelsB;
+    private readonly PixelRgba[] _pixelsA;
+    private readonly PixelRgba[] _pixelsB;
 
     private bool _state = false;
 

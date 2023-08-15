@@ -43,6 +43,6 @@ namespace BitMagic.Common
     {
         IReadOnlyDictionary<string, IAsmVariable> Values { get; }
         IList<IAsmVariable> AmbiguousVariables { get; }
-        bool TryGetValue(string name, int lineNumber, out int result);
+        bool TryGetValue(string name, SourceFilePosition source, out int result);
     }
 }

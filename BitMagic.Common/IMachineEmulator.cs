@@ -16,7 +16,7 @@ namespace BitMagic.Common
         ProcStart,
         ProcEnd,
         SegmentStart,
-        Pointer,
+        LabelPointer,
         Byte,
         Sbyte,
         Char,
@@ -42,6 +42,7 @@ namespace BitMagic.Common
     public interface IVariables
     {
         IReadOnlyDictionary<string, IAsmVariable> Values { get; }
+        IList<IAsmVariable> AmbiguousVariables { get; }
         bool TryGetValue(string name, int lineNumber, out int result);
     }
 }

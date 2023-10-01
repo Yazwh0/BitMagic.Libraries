@@ -8,7 +8,7 @@ public static class FixFilenameExtension
         return char.ToLower(filename[0]) + filename[1..];
 #endif
 #if OS_LINUX
-        return path;
+        return filename;
 #endif
     }
 }

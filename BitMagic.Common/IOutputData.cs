@@ -9,7 +9,7 @@ namespace BitMagic.Common
         bool RequiresReval { get; }
         List<string> RequiresRevalNames { get; }
         void ProcessParts(bool finalParse);
-        void WriteToConsole();
+        void WriteToConsole(IEmulatorLogger logger);
         SourceFilePosition Source { get; }
     }
 

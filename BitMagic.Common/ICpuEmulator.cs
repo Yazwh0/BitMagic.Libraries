@@ -19,6 +19,8 @@ namespace BitMagic.Common
         (byte[]? Data, bool RequiresRecalc) Compile(string parameters, IOutputData line, ICpuOpCode opCode, IExpressionEvaluator expressionEvaluator, IVariables variables, bool final);
         (int BytesUsed, string DecompiledCode) Decompile(IEnumerable<byte> inputBytes);
         int Order { get; }
+        bool Valid(string parameters);
+        bool HasTemplate { get; } // to indicate its matching things like "( ... ), x", to be used with Valid()
     }
 
     public enum ParameterSize

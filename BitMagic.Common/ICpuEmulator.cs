@@ -35,6 +35,7 @@ namespace BitMagic.Common
     {
         public void Reset();
         public (int Result, bool RequiresRecalc) Evaluate(string expression, SourceFilePosition source, IVariables variables, int address, bool final);
+        public IVariables? Variables { get; }
     }
 
     public interface ICpuOpCode

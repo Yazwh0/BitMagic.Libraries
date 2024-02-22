@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BitMagic.Common
 {
@@ -37,6 +38,8 @@ namespace BitMagic.Common
         VariableType VariableType { get; }
         int Length { get; }
         bool Array { get; }
+        bool RequiresReval { get; }
+        Func<bool, (int Value, bool RequiresReval)> Evaluate { get; }
     }
 
     public interface IVariables

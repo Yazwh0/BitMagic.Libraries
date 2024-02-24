@@ -11,6 +11,8 @@ namespace BitMagic.Common
         void ProcessParts(bool finalParse);
         void WriteToConsole(IEmulatorLogger logger);
         SourceFilePosition Source { get; }
+        bool CanStep { get; }
+        public IScope Scope { get; }
     }
 
     public record SourceFilePosition

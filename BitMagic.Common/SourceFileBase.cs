@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BitMagic.Common;
@@ -84,5 +85,15 @@ public abstract class SourceFileBase : ISourceFile
     public void AddChild(ISourceFile child)
     {
         _children.Add(child);
+    }
+
+    public virtual int AddParent(ISourceFile parent)
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual void SetParentMap(int lineNumber, int parentLineNumber, int parentId)
+    {
+        throw new NotImplementedException();
     }
 }

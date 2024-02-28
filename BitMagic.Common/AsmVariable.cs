@@ -11,4 +11,5 @@ public class AsmVariable : IAsmVariable
     public int Length { get; set; } = 0;
     public bool RequiresReval { get; set; } = false;
     public Func<bool, (int Value, bool RequiresReval)> Evaluate { get; set; } = (_) => (0, true);
+    public SourceFilePosition? SourceFilePosition { get; set; } = null;
 }

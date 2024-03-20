@@ -13,21 +13,6 @@ public enum SourceFileType
     MemoryMap
 }
 
-//public interface ISourceFileOld
-//{
-//    string Name { get; }
-//    string Path { get; }
-//    int? ReferenceId { get; }
-//    SourceFileType Origin { get; }
-//    bool Volatile { get; }
-//    Action Generate { get; }
-//    bool ActualFile { get; }
-
-//    public ISourceFile? Parent { get; }
-
-//    string GetContent();
-//}
-
 public interface ISourceFile
 {
     string Name { get; }
@@ -38,8 +23,8 @@ public interface ISourceFile
     Task UpdateContent();                   // for things like dissasembly
     bool RequireUpdate { get; }
 
-    bool ActualFile { get; }
-
+    bool ActualFile { get; }                // On the host PC
+    bool X16File { get; }                   // File to be put on the SDCard
 
     IReadOnlyList<ISourceFile> Parents { get; }
     IReadOnlyList<ISourceFile> Children { get; }

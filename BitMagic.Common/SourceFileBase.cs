@@ -18,6 +18,8 @@ public abstract class SourceFileBase : ISourceFile
 
     public bool ActualFile { get; set; }
 
+    public abstract bool X16File { get; }
+
     public abstract IReadOnlyList<string> Content { get; protected set; }
 
 

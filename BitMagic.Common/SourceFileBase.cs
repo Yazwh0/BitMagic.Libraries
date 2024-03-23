@@ -31,7 +31,6 @@ public abstract class SourceFileBase : ISourceFile
     public IReadOnlyList<ISourceFile> Children => _children;
 
 
-
     private readonly List<ChildSourceMapReference> _childrenMap = new();
     public IReadOnlyList<ChildSourceMapReference> ChildrenMap => _childrenMap;
 
@@ -68,7 +67,6 @@ public abstract class SourceFileBase : ISourceFile
             if (index == -1)
             {
                 throw new System.Exception("Parent not found in child mapping!");
-                continue;
             }
 
             for (var i = 0; i < c.ParentMap.Count; i++)

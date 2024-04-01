@@ -2,18 +2,22 @@
 
 namespace BitMagic.Common
 {
-    public interface IOutputData
+    public interface IOutputData : IDebuggerMapItem
     {
         byte[] Data { get; }
         uint[] DebugData { get; }
-        int Address { get; }
         bool RequiresReval { get; }
         List<string> RequiresRevalNames { get; }
         void ProcessParts(bool finalParse);
         void WriteToConsole(IEmulatorLogger logger);
-        SourceFilePosition Source { get; }
+    }
+
+    public interface IDebuggerMapItem
+    {
+        int Address { get; }
         bool CanStep { get; }
         public IScope Scope { get; }
+        SourceFilePosition Source { get; }
     }
 
     public record SourceFilePosition

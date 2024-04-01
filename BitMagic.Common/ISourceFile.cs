@@ -34,6 +34,7 @@ public interface ISourceFile
     IReadOnlyList<ChildSourceMapReference> ChildrenMap { get; }
 
     void MapChildren();
+    void AddChild(ISourceFile parent);
 
     int AddParent(ISourceFile parent);
     void SetParentMap(int lineNumber, int parentLineNumber, int parentId);

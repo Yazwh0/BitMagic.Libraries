@@ -47,5 +47,6 @@ namespace BitMagic.Common
         IReadOnlyDictionary<string, IAsmVariable> Values { get; }
         IList<IAsmVariable> AmbiguousVariables { get; }
         bool TryGetValue(string name, SourceFilePosition source, out IAsmVariable? result);
+        bool TryGetValue(int value, SourceFilePosition source, out IAsmVariable? result);
     }
 }

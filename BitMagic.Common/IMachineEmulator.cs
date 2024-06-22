@@ -11,7 +11,7 @@ namespace BitMagic.Common
         ICpu Cpu { get; }
     }
 
-    public enum VariableType
+    public enum VariableDataType
     {
         Constant,
         ProcStart,
@@ -31,10 +31,17 @@ namespace BitMagic.Common
         FixedStrings
     }
 
+    public enum VariableType
+    {
+        CompileConstant,
+        DebuggerExpression
+    }
+
     public interface IAsmVariable
     {
         string Name { get; }
         int Value { get; }
+        VariableDataType VariableDataType { get; }
         VariableType VariableType { get; }
         int Length { get; }
         bool Array { get; }

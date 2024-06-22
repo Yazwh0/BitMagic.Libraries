@@ -7,4 +7,6 @@ public interface IScope
 {
     IVariables Variables { get; }
     public string Name { get; }
+    public IScope? Parent { get; }
+    public bool Anonymous { get; }
 }

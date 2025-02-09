@@ -84,4 +84,86 @@ public static class AddressFunctions
 
     public static (int address, int secondAddress) GetMemoryLocations(int address, Emulator emulator) =>
         GetMemoryLocations(GetDebuggerAddress(address, emulator));
+
+    public static int IncrementDebuggerAddress(int debuggerAddress) =>
+        (debuggerAddress & 0xffff) switch
+        {
+            < 0xa000 => debuggerAddress + 1, // normal ram
+            < 0xbfff => debuggerAddress + 1, // banked ram
+            < 0xc000 => (debuggerAddress & 0xff0000) + 0x01a000, // roll over
+            < 0xffff => debuggerAddress + 1, // banked rom
+            <= 0xffff => (debuggerAddress & 0xff0000) + 0x01c000, // roll over
+            _ => debuggerAddress + 1
+        };
+
+    public static int AddDebuggerAddress(int debuggerAddress, int count)
+    {
+        var address = debuggerAddress & 0xffff;
+
+        if (address < 0xa000)
+            return address + count;
+
+        var bank = debuggerAddress & 0xff0000;
+        int banksToAdd = 0;
+
+        if (address < 0xc000)
+        {
+            banksToAdd = (count & (0xffffff - 0x1fff)) >> 13;
+            bank += banksToAdd;
+            address += count & 0x1fff;
+
+            if (address > 0x1fff)
+            {
+                bank++;
+                address &= 0x1fff;
+            }
+
+            return bank * 0x10000 + address;
+        }
+
+        banksToAdd = (count & (0xffffff - 0x3fff)) >> 13;
+        bank += banksToAdd;
+        address += count & 0x3fff;
+
+        if (address > 0x3fff)
+        {
+            bank++;
+            address &= 0x3fff;
+        }
+
+        return bank * 0x10000 + address;
+    }
+
+    public static int GetOffsetFromDebuggerAddress(int baseDebuggerAddress, int debuggerAddress)
+    {
+        // normal ram
+        if (baseDebuggerAddress < 0xa000)
+            return debuggerAddress - baseDebuggerAddress;
+
+        var baseBank = (baseDebuggerAddress & 0xff0000) >> 16;
+        var addressBank = (debuggerAddress & 0xff0000) >> 16;
+        var baseAddress = (baseDebuggerAddress & 0xffff);
+        var address = (debuggerAddress & 0xffff);
+
+        // banked ram
+        if (address < 0xc000)
+        {
+            baseAddress -= 0xa000;
+            baseAddress += baseBank * 0x2000;
+
+            address -= 0xa000;
+            address += addressBank * 0x2000;
+
+            return address - baseAddress;
+        }
+
+        // banked rom
+        baseAddress -= 0xc000;
+        baseAddress += baseBank * 0x4000;
+
+        address -= 0xc000;
+        address += addressBank * 0x4000;
+
+        return address - baseAddress;
+    }
 }

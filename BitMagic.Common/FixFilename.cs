@@ -11,6 +11,11 @@ public static class FixFilenameExtension
 #if OS_WINDOWS
         string fullFilePath = Path.GetFullPath(filename);
 
+        if (!File.Exists(fullFilePath))
+        {
+            return filename;
+        }
+
         string fixedPath = "";
         foreach (string token in fullFilePath.Split('\\'))
         {

@@ -14,7 +14,7 @@ namespace BitMagic.Common
 
     public interface IDebuggerMapItem
     {
-        int Address { get; }
+        int Address { get; set; } // settable for relocatable code
         bool CanStep { get; }
         public IScope Scope { get; }
         SourceFilePosition Source { get; }

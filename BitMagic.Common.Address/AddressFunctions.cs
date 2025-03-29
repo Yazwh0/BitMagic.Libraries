@@ -103,11 +103,12 @@ public static class AddressFunctions
         if (address < 0xa000)
             return address + count;
 
-        var bank = debuggerAddress & 0xff0000;
+        var bank = (debuggerAddress & 0xff0000) >> 16;
         int banksToAdd = 0;
 
         if (address < 0xc000)
         {
+            address -= 0xa000;
             banksToAdd = (count & (0xffffff - 0x1fff)) >> 13;
             bank += banksToAdd;
             address += count & 0x1fff;
@@ -117,10 +118,12 @@ public static class AddressFunctions
                 bank++;
                 address &= 0x1fff;
             }
+            address += 0xa000;
 
             return bank * 0x10000 + address;
         }
 
+        address -= 0xc000;
         banksToAdd = (count & (0xffffff - 0x3fff)) >> 13;
         bank += banksToAdd;
         address += count & 0x3fff;
@@ -130,6 +133,7 @@ public static class AddressFunctions
             bank++;
             address &= 0x3fff;
         }
+        address += 0xc000;
 
         return bank * 0x10000 + address;
     }

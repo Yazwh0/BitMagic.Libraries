@@ -9,6 +9,9 @@ public static class FixFilenameExtension
     public static string FixFilename(this string filename)
     {
 #if OS_WINDOWS
+        if (filename[0] == '/')
+            filename = filename[1..];
+
         string fullFilePath = Path.GetFullPath(filename);
 
         if (!File.Exists(fullFilePath))
@@ -27,7 +30,7 @@ public static class FixFilenameExtension
                 drive = DriveInfo.GetDrives()
                     .First(driveInfo => driveInfo.Name.Equals(drive, StringComparison.OrdinalIgnoreCase)).Name;
 
-                fixedPath = drive;
+                fixedPath = drive.ToLower();
             }
             else
             {

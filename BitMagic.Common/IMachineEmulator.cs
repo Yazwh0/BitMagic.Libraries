@@ -28,7 +28,21 @@ namespace BitMagic.Common
         Long,
         Ulong,
         String,
-        FixedStrings
+        FixedStrings,
+
+        Ptr,
+
+        BytePtr,
+        SbytePtr,
+        CharPtr,
+        ShortPtr,
+        UshortPtr,
+        IntPtr,
+        UintPtr,
+        LongPtr,
+        UlongPtr,
+        StringPtr,
+        FixedStringsPtr
     }
 
     public enum VariableType

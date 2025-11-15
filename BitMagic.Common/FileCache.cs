@@ -35,6 +35,15 @@ public static class FileCache
                 Cache.Add(filename, new FileData() { Filename = filename, Data = data, LastWriteTimeUtc = File.GetLastWriteTimeUtc(filename) });
             }
 
+            var lastWriteTimeUtc = File.GetLastWriteTimeUtc(filename);
+
+            if (lastWriteTimeUtc != Cache[filename].LastWriteTimeUtc)
+            {
+                var data = File.ReadAllBytes(filename);
+                Cache[filename].Data = data;
+                Cache[filename].LastWriteTimeUtc = lastWriteTimeUtc;
+            }
+
             return Cache[filename].LastWriteTimeUtc;
         }
     }

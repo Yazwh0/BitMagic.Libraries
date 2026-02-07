@@ -13,6 +13,10 @@ public class AsmVariable : IAsmVariable
     public Func<bool, (int Value, bool RequiresReval)> Evaluate { get; set; } = (_) => (0, true);
     public SourceFilePosition? SourceFilePosition { get; set; } = null;
     public VariableType VariableType => VariableType.CompileConstant;
+    public void Move(int offset)
+    {
+        Value += offset;
+    }
 }
 
 public class DebuggerVariable : IAsmVariable
@@ -28,8 +32,13 @@ public class DebuggerVariable : IAsmVariable
 
     public bool Array { get; set; }
 
-    public bool RequiresReval => false;
+    public bool RequiresReval { get => false; set { } }
 
     public Func<bool, (int Value, bool RequiresReval)> Evaluate { get; set; } = (_) => (0, true);
     public VariableType VariableType => VariableType.DebuggerExpression;
+
+    public void Move(int offset)
+    {
+        // no-op
+    }
 }

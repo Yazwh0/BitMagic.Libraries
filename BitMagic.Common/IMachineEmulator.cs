@@ -59,8 +59,9 @@ namespace BitMagic.Common
         VariableType VariableType { get; }
         int Length { get; }
         bool Array { get; }
-        bool RequiresReval { get; }
+        bool RequiresReval { get; set; }
         Func<bool, (int Value, bool RequiresReval)> Evaluate { get; }
+        void Move(int offset);
     }
 
     public interface IVariables

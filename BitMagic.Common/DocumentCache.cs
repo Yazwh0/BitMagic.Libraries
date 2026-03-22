@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BitMagic.Common;
 
-public class DocumentCache
+public class DocumentCache : IDisposable
 {
     public static DocumentCache Instance { get; set; } = new();
 
@@ -22,9 +23,9 @@ public class DocumentCache
 
     public async Task AddFile(string filename)
     {
-        var lines = await File.ReadAllLinesAsync(filename);
-
-        _files.Add(filename, new SourceFile() { Filename = filename, Lines = lines });
+        var toAdd = new SourceFile(filename);
+        await toAdd.Load();
+        _files.Add(filename, toAdd);
     }
 
     public async Task<string[]> ReadAllTextAsync(string filename)
@@ -52,20 +53,116 @@ public class DocumentCache
             return;
         }
 
-        _files.Add(filename, new SourceFile() { Filename = filename, Lines = content.ToArray() });
+        _files.Add(filename, new SourceFile(filename, content.ToArray()));
     }
 
     public async Task UpdateFile(string filename)
     {
-        _files.Remove(filename, out _);
+        if (_files.Remove(filename, out var removed))
+        {
+            removed.Dispose();
+        }
+
         await AddFile(filename);
     }
 
     public bool IsInCache(string filename) => _files.ContainsKey(filename);
 
-    private sealed class SourceFile
+    public void Dispose()
     {
-        public string Filename { get; set; } = "";
+        foreach(var i in _files)
+            i.Value.Dispose();
+    }
+
+    private sealed class SourceFile : IDisposable
+    {
+        public string Filename { get; }
         public string[] Lines { get; set; } = Array.Empty<string>();
+        private FileSystemWatcher? _watcher = null;
+        private Timer? _debounceTimer;
+
+        public SourceFile(string filename)
+        {
+            Filename = filename;
+        }
+
+        public SourceFile(string filename, string[] lines)
+        {
+            Filename = filename;
+            Lines = lines;
+            SetupFileWatcher();
+        }
+
+        public async Task Load()
+        {
+            Lines = await File.ReadAllLinesAsync(Filename);
+            SetupFileWatcher();
+        }
+
+        private void SetupFileWatcher()
+        {
+            var directory = Path.GetDirectoryName(Filename)!;
+            var fileName = Path.GetFileName(Filename);
+
+            _watcher = new FileSystemWatcher(directory, fileName)
+            {
+                NotifyFilter = NotifyFilters.LastWrite |
+                               NotifyFilters.Size
+            };
+
+            _watcher.Changed += _watcher_Changed;
+            _watcher.EnableRaisingEvents = true;
+        }
+
+        private void _watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            Console.WriteLine($"File {Filename} has changed. Reloading...");
+            _debounceTimer?.Dispose();
+
+            _debounceTimer = new Timer(_ =>
+            {
+                var lines = TryReadFileWithRetry(Filename);
+                if (lines != null)
+                {
+                    Lines = lines;
+                    Console.WriteLine($"File {Filename} reloaded successfully.");
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to reload file {Filename} after multiple attempts.");
+                }
+            }, null, 100, Timeout.Infinite);
+        }
+
+        private static string[]? TryReadFileWithRetry(string path, int retries = 10, int delayMs = 50)
+        {
+            for (int i = 0; i < retries; i++)
+            {
+                try
+                {
+                    return File.ReadAllLines(path);
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(delayMs);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Thread.Sleep(delayMs);
+                }
+            }
+
+            return null;
+        }
+
+        public void Dispose()
+        {
+            if (_watcher != null)
+            {
+                _watcher.Changed -= _watcher_Changed;
+                _watcher.Dispose();
+                _debounceTimer?.Dispose();
+            }
+        }
     }
 }

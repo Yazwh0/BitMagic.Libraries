@@ -16,7 +16,7 @@ public class DocumentCache : IDisposable
     public string[] GetFile(string filename)
     {
         if (_files.TryGetValue(filename, out var sourceFile))
-            return sourceFile.Lines;
+            return sourceFile.GetLines();
 
         return [];
     }
@@ -31,7 +31,7 @@ public class DocumentCache : IDisposable
     public async Task<string[]> ReadAllTextAsync(string filename)
     {
         if (_files.ContainsKey(filename))
-            return _files[filename].Lines;
+            return _files[filename].GetLines();
 
         var content = await File.ReadAllTextAsync(filename);
         var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -70,20 +70,32 @@ public class DocumentCache : IDisposable
 
     public void Dispose()
     {
-        foreach(var i in _files)
+        foreach (var i in _files)
             i.Value.Dispose();
     }
 
     private sealed class SourceFile : IDisposable
     {
         public string Filename { get; }
-        public string[] Lines { get; set; } = Array.Empty<string>();
+        private string[] _lines = [];
+        public string[] Lines
+        {
+            get => _lines;
+            set
+            {
+                _lines = value;
+                ReadTime = DateTime.Now;
+            }
+        }
+
+        public DateTime ReadTime { get; private set; }
         private FileSystemWatcher? _watcher = null;
         private Timer? _debounceTimer;
 
         public SourceFile(string filename)
         {
             Filename = filename;
+            ReadTime = DateTime.MinValue;
         }
 
         public SourceFile(string filename, string[] lines)
@@ -91,6 +103,17 @@ public class DocumentCache : IDisposable
             Filename = filename;
             Lines = lines;
             SetupFileWatcher();
+        }
+
+        public string[] GetLines()
+        {
+            if (File.GetLastWriteTime(Filename) > ReadTime)
+            {
+                Console.WriteLine($"File {Filename} has been modified since last read. Reloading...");
+                Lines = File.ReadAllLines(Filename);
+            }
+
+            return Lines;
         }
 
         public async Task Load()

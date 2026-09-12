@@ -139,11 +139,11 @@ public class DocumentCache : IDisposable
 
         private void _watcher_Changed(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine($"File {Filename} has changed. Reloading...");
             _debounceTimer?.Dispose();
 
             _debounceTimer = new Timer(_ =>
             {
+                Console.WriteLine($"File {Filename} has changed. Reloading...");
                 var lines = TryReadFileWithRetry(Filename);
                 if (lines != null)
                 {

@@ -12,6 +12,10 @@ public class AsmVariable : IAsmVariable
     public bool RequiresReval { get; set; } = false;
     public Func<bool, (int Value, bool RequiresReval)> Evaluate { get; set; } = (_) => (0, true);
     public SourceFilePosition? SourceFilePosition { get; set; } = null;
+    /// <summary>
+    /// Segment the variable is in, if known. Used to group large numbers of variables for display.
+    /// </summary>
+    public string? Segment { get; set; } = null;
     public VariableType VariableType => VariableType.CompileConstant;
     public void Move(int offset)
     {

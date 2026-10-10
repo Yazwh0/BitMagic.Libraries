@@ -45,6 +45,12 @@ namespace BitMagic.Common
         FixedStringsPtr
     }
 
+    public enum Visibility
+    {
+        Public,
+        Private
+    }
+
     public enum VariableType
     {
         CompileConstant,

@@ -27,6 +27,11 @@ public class AsmVariable : IAsmVariable
     /// </summary>
     public bool OperandLabel { get; set; } = false;
     /// <summary>
+    /// Keeps the variable out of the debugger's variable lists (Globals, Locals). Set on a `.constvar`,
+    /// which is typed like a variable, so the type alone can't identify it.
+    /// </summary>
+    public bool HideInVariables { get; set; } = false;
+    /// <summary>
     /// For an `.export` alias, the full name of the variable it finally resolves to.
     /// </summary>
     public string? AliasOf { get; set; } = null;

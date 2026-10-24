@@ -8,7 +8,9 @@ public static class FixFilenameExtension
 {
     public static string FixFilename(this string filename)
     {
-#if OS_WINDOWS
+        if (!OperatingSystem.IsWindows())
+            return filename;
+
         if (filename[0] == '/')
             filename = filename[1..];
 
@@ -40,9 +42,5 @@ public static class FixFilenameExtension
 
         return fixedPath;
         //return char.ToLower(filename[0]) + filename[1..];
-#endif
-#if OS_LINUX
-        return filename;
-#endif
     }
 }

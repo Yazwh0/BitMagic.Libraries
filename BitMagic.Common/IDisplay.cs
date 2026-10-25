@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace BitMagic.Common;
@@ -44,7 +45,7 @@ public class BitImage
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct PixelRgba
+public struct PixelRgba : IEquatable<PixelRgba>
 {
     public byte R;
     public byte G;
@@ -66,6 +67,31 @@ public struct PixelRgba
         B = b;
         A = a;
     }
+
+    // RGB, RGBA, RRGGBB or RRGGBBAA, the leading # is optional
+    public static PixelRgba ParseHex(string hex)
+    {
+        hex = hex.TrimStart('#');
+
+        if (hex.Length == 3 || hex.Length == 4)
+            hex = string.Concat(hex.Select(c => $"{c}{c}"));
+
+        if (hex.Length != 6 && hex.Length != 8)
+            throw new FormatException($"'{hex}' is not a valid colour, expected RGB, RGBA, RRGGBB or RRGGBBAA.");
+
+        var value = Convert.ToUInt32(hex, 16);
+
+        if (hex.Length == 6)
+            return new PixelRgba((byte)(value >> 16), (byte)(value >> 8), (byte)value);
+
+        return new PixelRgba((byte)(value >> 24), (byte)(value >> 16), (byte)(value >> 8), (byte)value);
+    }
+
+    public bool Equals(PixelRgba other) => R == other.R && G == other.G && B == other.B && A == other.A;
+    public override bool Equals(object? obj) => obj is PixelRgba other && Equals(other);
+    public override int GetHashCode() => R | (G << 8) | (B << 16) | (A << 24);
+    public static bool operator ==(PixelRgba left, PixelRgba right) => left.Equals(right);
+    public static bool operator !=(PixelRgba left, PixelRgba right) => !left.Equals(right);
 
     public override string ToString() => $"R:${R:X2} G:${G:X2} B:${B:X2} A:${A:X2}";
 }
